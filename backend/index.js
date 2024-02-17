@@ -36,7 +36,7 @@ const upload = multer({ storage: storage });
 
 // Creating Upload Endpoint for images
 
-app.use("./images", express.static("upload/images"));
+app.use("/images", express.static("upload/images"));
 
 app.post("/upload", upload.single("product"), (req, res) => {
   res.json({
@@ -185,7 +185,7 @@ app.post("/signup", async (req, res) => {
 // Creating endpoint for user login
 
 app.post("/login", async (req, res) => {
-  let user = new Users.findOne({ email: req.body.email });
+  let user = await Users.findOne({ email: req.body.email });
   if (user) {
     const passCompare = req.body.password === user.password;
     if (passCompare) {

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./CartItems.css";
 import { ShopContext } from "../../Context/ShopContext";
 import remove_icon from "../Assets/cart_cross_icon.png";
@@ -6,6 +6,31 @@ import remove_icon from "../Assets/cart_cross_icon.png";
 const CartItems = () => {
   const { getTotalCartAmount, all_product, cartItems, removeFromCart } =
     useContext(ShopContext);
+
+  const [promoCode, setPromoCode] = useState("");
+  const [discountApplied, setDiscountApplied] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [totalWithDiscount, setTotalWithDiscount] = useState(
+    getTotalCartAmount()
+  );
+
+  const applyPromoCode = () => {
+    const percentageMatch = promoCode.match(/(\d+)/);
+    if (percentageMatch) {
+      const promoPercentage = parseInt(percentageMatch[0]);
+      if (promoPercentage > 0 && promoPercentage <= 100) {
+        const discount = getTotalCartAmount() * (promoPercentage / 100);
+        setDiscountPercentage(promoPercentage);
+        setTotalWithDiscount(getTotalCartAmount() - discount);
+        setDiscountApplied(true);
+      } else {
+        setDiscountApplied(false);
+      }
+    } else {
+      setDiscountApplied(false);
+    }
+  };
+
   return (
     <div className="cartitems">
       <div className="cartitems-format-main">
@@ -54,22 +79,31 @@ const CartItems = () => {
             </div>
             <hr />
             <div className="cartitems-total-item">
-              <p>Shipping Fee</p>
-              <p>Free</p>
+              <p>Discount Applied</p>
+              {discountApplied ? (
+                <p>{discountPercentage}%</p>
+              ) : (
+                <p>No discount applied</p>
+              )}
             </div>
             <hr />
             <div className="cartitems-total-item">
               <h3>Total</h3>
-              <h3>${getTotalCartAmount()}</h3>
+              <h3>${totalWithDiscount}</h3>
             </div>
           </div>
           <button>PROCEED TO CHECKOUT</button>
         </div>
         <div className="cartitems-promocode">
-          <p>If you have a promocode, enter it here</p>
+          <p>If you have a promo code, enter it here</p>
           <div className="cartitems-promobox">
-            <input type="text" placeholder="promocode" />
-            <button>Submit</button>
+            <input
+              type="text"
+              placeholder="Enter promo code"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+            />
+            <button onClick={applyPromoCode}>Submit</button>
           </div>
         </div>
       </div>

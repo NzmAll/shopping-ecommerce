@@ -2,10 +2,12 @@ import React from "react";
 import "./Footer.css";
 import footer_logo from "../Assets/logo_big.png";
 import instagram_icon from "../Assets/instagram_icon.png";
-import pintester_icon from "../Assets/pintester_icon.png";
+import pinterest_icon from "../Assets/pinterest_icon.png";
 import whatsapp_icon from "../Assets/whatsapp_icon.png";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="footer">
       <div className="footer-logo">
@@ -21,18 +23,36 @@ const Footer = () => {
       </ul>
       <div className="footer-social-icon">
         <div className="footer-icons-container">
-          <img src={instagram_icon} alt="" />
+          <a
+            href="https://www.instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={instagram_icon} alt="instagram" />
+          </a>
         </div>
         <div className="footer-icons-container">
-          <img src={pintester_icon} alt="" />
+          <a
+            href="https://www.pinterest.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={pinterest_icon} alt="pinterest" />
+          </a>
         </div>
         <div className="footer-icons-container">
-          <img src={whatsapp_icon} alt="" />
+          <a
+            href="https://www.whatsapp.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={whatsapp_icon} alt="whatsapp" />
+          </a>
         </div>
       </div>
       <div className="footer-copyright">
         <hr />
-        <p>Copyright @ 2024 - All Right Reseved.</p>
+        <p>Copyright @ {currentYear} - All Right Reserved.</p>
       </div>
     </div>
   );

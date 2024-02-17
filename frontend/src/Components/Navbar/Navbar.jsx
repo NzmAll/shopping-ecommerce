@@ -20,7 +20,7 @@ const Navbar = () => {
     <div className="navbar">
       <div className="nav-logo">
         <img src={logo} alt="" />
-        <p>SHOPPER</p>
+        <p>E-COMMERCE</p>
       </div>
       <img
         className="nav-dropdown"

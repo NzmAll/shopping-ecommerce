@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import "./CartItems.css";
 import { ShopContext } from "../../Context/ShopContext";
 import remove_icon from "../Assets/cart_cross_icon.png";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { CiCircleMinus } from "react-icons/ci";
 
 const CartItems = () => {
   const { getTotalCartAmount, all_product, cartItems, removeFromCart } =
@@ -13,6 +15,17 @@ const CartItems = () => {
   const [totalWithDiscount, setTotalWithDiscount] = useState(
     getTotalCartAmount()
   );
+  const [quantityId, setQuantityId] = useState(1);
+
+  const handleIncreaseQuantity = () => {
+    setQuantityId(prevState => prevState + 1);
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (quantityId > 1) {
+      setQuantityId(prevState => prevState - 1);
+    }
+  };
 
   const applyPromoCode = () => {
     const percentageMatch = promoCode.match(/(\d+)/);
@@ -43,6 +56,7 @@ const CartItems = () => {
       </div>
       <hr />
       {all_product.map((e) => {
+        
         if (cartItems[e.id] > 0) {
           return (
             <div>
@@ -50,10 +64,18 @@ const CartItems = () => {
                 <img src={e.image} alt="" className="carticon-product-icon" />
                 <p>{e.name}</p>
                 <p>${e.new_price}</p>
-                <button className="cartitems-quantity">
-                  {cartItems[e.id]}
-                </button>
-                <p>${e.new_price * cartItems[e.id]}</p>
+                <div>
+                  <span onClick={handleDecreaseQuantity} style={{fontSize:"30px",position:"relative",top:"10px"}}>
+                    <CiCircleMinus />
+                  </span>
+                  <button className="cartitems-quantity">
+                    {quantityId}
+                  </button>
+                  <span onClick={handleIncreaseQuantity} style={{fontSize:"30px",position:"relative",top:"10px"}}>
+                    <IoIosAddCircleOutline />{" "}
+                  </span>
+                </div>
+                <p>${e.new_price * quantityId}</p>
                 <img
                   className="cartitems-remove-icon"
                   src={remove_icon}

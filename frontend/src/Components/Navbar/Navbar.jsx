@@ -19,8 +19,8 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <div className="nav-logo">
-        <img src={logo} alt="" />
-        <p>E-COMMERCE</p>
+    <img src={logo} alt="" />
+    <Link   to={"/"}> <p>E-COMMERCE</p></Link>   
       </div>
       <img
         className="nav-dropdown"
@@ -42,6 +42,7 @@ const Navbar = () => {
         <li
           onClick={() => {
             setMenu("mens");
+            console.log("mens print");
           }}
         >
           <Link style={{ textDecoration: "none" }} to="/mens">
@@ -51,13 +52,14 @@ const Navbar = () => {
         </li>
         <li
           onClick={() => {
-            setMenu("womens");
+            setMenu("woman");
+            console.log("womens print");
           }}
         >
           <Link style={{ textDecoration: "none" }} to="/womens">
             Women
           </Link>{" "}
-          {menu === "womens" ? <hr /> : <></>}
+          {menu === "woman" ? <hr /> : <></>}
         </li>
         <li
           onClick={() => {

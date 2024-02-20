@@ -72,11 +72,15 @@ const Product = mongoose.model("Product", {
     type: Number,
     required: true,
   },
+  quantityId: {
+    type: Number,
+    required: true,
+  },
   date: {
     type: Date,
     default: Date.now,
   },
-  avilable: {
+  available: {
     type: Boolean,
     default: true,
   },
@@ -99,6 +103,7 @@ app.post("/addproduct", async (req, res) => {
     category: req.body.category,
     new_price: req.body.new_price,
     old_price: req.body.old_price,
+    quantity: req.body.quantity,
   });
   console.log(product);
   await product.save();
@@ -142,7 +147,9 @@ const Users = mongoose.model("Users", {
     type: String,
   },
   cartData: {
-    type: Object,
+    type: Map,
+    of: Number,
+    default: {},
   },
   date: {
     type: Date,
@@ -216,10 +223,15 @@ app.get("/newcollections", async (req, res) => {
 //creating endpoint for popular in women section
 
 app.get("/popularinwomen", async (req, res) => {
-  let products = await Product.find({ category: "women" });
-  let popular_in_women = products.slice(0, 4);
-  console.log("Popular in women fetched");
-  res.send(popular_in_women);
+  try {
+    let products = await Product.find({ category: "woman" });
+    let popular_in_women = products.slice(0, 4);
+    console.log("Popular in women fetched");
+    res.send(popular_in_women);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 //creating middleware to fetch user

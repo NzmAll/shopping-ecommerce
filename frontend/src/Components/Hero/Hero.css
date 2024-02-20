@@ -50,6 +50,12 @@
   font-size: 22px;
   font-weight: 500;
 }
+.hero-latest-btn a{
+  text-decoration: none;
+  color: white;
+}
+
+
 
 .hero-right {
   flex: 1;

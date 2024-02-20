@@ -16,8 +16,12 @@
   color: #171717;
   font-size: 38px;
   font-weight: 600;
-}
 
+}
+.nav-logo a{
+text-decoration: none;
+
+}
 .nav-menu {
   display: flex;
   align-items: center;

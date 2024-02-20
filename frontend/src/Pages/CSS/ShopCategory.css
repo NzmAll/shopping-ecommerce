@@ -11,12 +11,6 @@
   align-items: center;
 }
 
-.shopcategory-sort {
-  padding: 10px 20px;
-  border-radius: 40px;
-  border: 1px solid #888;
-}
-
 .shopcategory-indexSort p span {
   font-weight: 600;
 }
@@ -28,7 +22,7 @@
   row-gap: 80px;
 }
 
-.shopcategory-loadmore {
+.shopcategory-loadmore button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,10 +30,57 @@
   width: 233px;
   height: 69px;
   border-radius: 75px;
-  background: #ededed;
+  background: red;
   color: #787878;
   font-size: 18px;
   font-weight: 500;
+}
+
+.dropbtn {
+  background-color: #04aa6d;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  background-color: #04aa6d;
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 40px;
+  border: 1px solid #888;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #04aa6d;
 }
 
 @media (max-width: 1280px) {

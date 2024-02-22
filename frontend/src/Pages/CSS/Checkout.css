@@ -1,0 +1,16 @@
+.form-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.form-control {
+  width: calc(50% - 5px);
+  margin: 20px 230px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.rccs {
+  margin-top: 50px;
+}

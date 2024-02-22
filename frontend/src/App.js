@@ -13,6 +13,7 @@ import kid_banner from "./Components/Assets/banner_kids.png";
 import NewCollections from "./Components/NewCollections/NewCollections";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
+import Checkout from "./Pages/Checkout";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/login" element={<LoginSignup />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
         <Footer />
       </BrowserRouter>

@@ -1,0 +1,61 @@
+.contactUs .container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.contactUs .header {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.contactUs form {
+  display: grid;
+  gap: 20px;
+}
+
+.contactUs.left-column {
+  grid-column: 1;
+}
+
+.contactUs .right-column {
+  grid-column: 2;
+}
+
+.contactUs label {
+  font-size: 25px;
+}
+
+.contactUs input {
+  display: flex;
+  width: 20%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  border: 1px solid black;
+}
+
+.contactUs button {
+  margin: 0 0 30px 800px;
+  gap: 15px;
+  width: 310px;
+  height: 70px;
+  border-radius: 75px;
+  margin-top: 30px;
+  background: #ff4141;
+  border: 1px solid #ff4141;
+  color: white;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.contactUs-input {
+  padding: 0 28px 20px;
+}

@@ -28,6 +28,7 @@
 
 .footer-links li {
   cursor: pointer;
+  text-decoration: none;
 }
 
 .footer-social-icon {

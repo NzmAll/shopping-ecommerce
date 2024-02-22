@@ -72,9 +72,10 @@ const Product = mongoose.model("Product", {
     type: Number,
     required: true,
   },
-  quantityId: {
+  quantity: {
     type: Number,
     required: true,
+    default: 0
   },
   date: {
     type: Date,
@@ -150,6 +151,9 @@ const Users = mongoose.model("Users", {
     type: Map,
     of: Number,
     default: {},
+  },
+  quantity:{
+    type: Number,
   },
   date: {
     type: Date,

@@ -57,6 +57,31 @@ const LoginSignup = () => {
     }
   };
 
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const validateForm = () => {
+    if (state === "Login") {
+      if (!formData.email || !formData.password) {
+        alert("Please fill in all the required fields.");
+        return false;
+      }
+    } else {
+      if (!formData.username || !formData.email || !formData.password) {
+        alert("Please fill in all the required fields.");
+        return false;
+      }
+
+      if (!validateEmail(formData.email)) {
+        alert("Please enter a valid email address.");
+        return false;
+      }
+    }
+    return true;
+  };
+
   return (
     <div className="loginsignup">
       <div className="loginsignup-container">
@@ -79,6 +104,7 @@ const LoginSignup = () => {
             onChange={changeHandler}
             type="email"
             placeholder="Email Address"
+            required
           />
           <input
             name="password"
@@ -86,11 +112,14 @@ const LoginSignup = () => {
             onChange={changeHandler}
             type="password"
             placeholder="Password"
+            required
           />
         </div>
         <button
           onClick={() => {
-            state === "Login" ? login() : signup();
+            if (validateForm()) {
+              state === "Login" ? login() : signup();
+            }
           }}
         >
           Continue

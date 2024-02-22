@@ -60,16 +60,18 @@
   padding: 15px 0;
 }
 
-.cartitems-total button {
+.cartitems-total .checkout {
   width: 262px;
   height: 58px;
   outline: none;
-  border: none;
   background: #ff5a5a;
   color: #fff;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  border-radius: 20px;
+  text-decoration: none;
+  padding: 40px 0px 5px 60px;
 }
 
 .cartitems-promocode {

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "./CSS/Checkout.css";
+import { Link } from "react-router-dom";
 
 const Checkout = () => {
   const [state, setState] = useState({
@@ -74,6 +75,7 @@ const Checkout = () => {
             required
           />
         </div>
+        <Link to={"/cart"} className="submit">Submit</Link>
       </div>
     </div>
   );

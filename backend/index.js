@@ -31,6 +31,33 @@ const storage = multer.diskStorage({
     );
   },
 });
+  //email smtp
+  const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'nizamiaa@code.edu.az',
+    pass: 'zoey odsj gayo ghdh'
+  }
+});
+
+const recipientEmail = 'nizamiallahverdiyev2003@gmail.com';
+
+
+const dynamicContent = '<p>Merhaba kardes ben senin admininim,benim veb sitemde forget password yok lutfen confirm ederken bunu dusun .</p> <br/> <button>Confirm</button>';
+
+const mailOptions = {
+  from: 'your_email@example.com',
+  to: recipientEmail,
+  subject: 'Confirm message',
+  html: dynamicContent
+};
+
+
+
 
 const upload = multer({ storage: storage });
 
@@ -97,6 +124,7 @@ app.post("/addproduct", async (req, res) => {
   } else {
     id = 1;
   }
+ 
   const product = new Product({
     id: id,
     name: req.body.name,
@@ -136,7 +164,7 @@ app.get("/allproducts", async (req, res) => {
 
 // Shema creating for User model
 
-const Users = mongoose.model("Users", {
+const Users =  mongoose.model("Users", {
   name: {
     type: String,
   },
@@ -155,16 +183,29 @@ const Users = mongoose.model("Users", {
   quantity:{
     type: Number,
   },
+  emailConfirm: {
+    type: Boolean,
+    default: false, 
+  },
   date: {
     type: Date,
     default: Date.now,
   },
 });
+app.get("/getUsers", (req, res) => {
+  Users.find({}).then(users => {
+    res.json(users);
+  }).catch(err => {
+    console.error("Error fetching users:", err);
+    res.status(500).json({ error: "An error occurred while fetching users" });
+  });
+});
+
 
 //Creating Endpoint for registering the user
 
 app.post("/signup", async (req, res) => {
-  let check = await Users.findOne({ email: req.body.email });
+  let check = await Users.findOne({ email: req.body.email, });
   if (check) {
     return res.status(400).json({
       success: false,
@@ -180,7 +221,17 @@ app.post("/signup", async (req, res) => {
     email: req.body.email,
     password: req.body.password,
     cartData: cart,
+    emailConfirm: req.body.emailConfirm
   });
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('E-posta gönderildi: ' + info.response);
+    }
+  });
+
+
   await user.save();
 
   const data = {
@@ -196,22 +247,29 @@ app.post("/signup", async (req, res) => {
 // Creating endpoint for user login
 
 app.post("/login", async (req, res) => {
-  let user = await Users.findOne({ email: req.body.email });
-  if (user) {
-    const passCompare = req.body.password === user.password;
-    if (passCompare) {
-      const data = {
-        user: {
-          id: user.id,
-        },
-      };
-      const token = jwt.sign(data, "secret_ecom");
-      res.json({ success: true, token });
-    } else {
-      res.json({ success: false, errors: "Invalid password" });
-    }
+  const user = await Users.findOne({ email: req.body.email });
+  
+  if (!user) {
+    return res.json({ success: false, errors: "Wrong email id" });
+  }
+
+  if (!user.emailConfirm) {
+    return res.json({ success: false, errors: "Email is not confirmed" });
+  }
+
+  const passCompare = req.body.password === user.password;
+
+  if (passCompare) {
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+    
+    const token = jwt.sign(data, "secret_ecom");
+    return res.json({ success: true, token });
   } else {
-    res.json({ success: false, errors: "Wrong email id" });
+    return res.json({ success: false, errors: "Invalid password" });
   }
 });
 

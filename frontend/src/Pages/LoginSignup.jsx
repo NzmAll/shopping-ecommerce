@@ -7,6 +7,7 @@ const LoginSignup = () => {
     username: "",
     password: "",
     email: "",
+    agree: false
   });
 
   const changeHandler = (e) => {
@@ -19,22 +20,27 @@ const LoginSignup = () => {
     await fetch("http://localhost:4000/login", {
       method: "POST",
       headers: {
-        Accept: "application/form-data",
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     })
       .then((response) => response.json())
       .then((data) => (responseData = data));
-
+  
     if (responseData.success) {
       localStorage.setItem("auth-token", responseData.token);
       window.location.replace("/");
     } else {
-      alert(responseData.errors);
+      if (responseData.errors === "email is not confirmed") {
+        // Handle email not confirmed error
+        alert("Email is not confirmed. Please confirm your email.");
+      } else {
+        alert(responseData.errors);
+      }
     }
   };
-
+  
   const signup = async () => {
     console.log("Sign Up", formData);
     let responseData;
@@ -78,7 +84,23 @@ const LoginSignup = () => {
         alert("Please enter a valid email address.");
         return false;
       }
+      
+      if (formData.username.trim() === "") {
+        alert("Please enter your name.");
+        return false;
+      }
     }
+
+    if (formData.password.length < 8) {
+      alert("Password must be at least 8 characters long.");
+      return false;
+    }
+
+    if (!formData.agree) {
+      alert("Please agree to the terms of use & privacy policy.");
+      return false;
+    }
+
     return true;
   };
 
@@ -115,6 +137,16 @@ const LoginSignup = () => {
             required
           />
         </div>
+        <div className="loginsignup-agree">
+          <input 
+            type="checkbox" 
+            name="agree" 
+            checked={formData.agree} 
+            onChange={() => setFormData({...formData, agree: !formData.agree})} 
+            id="agree-checkbox" 
+          />
+          <label htmlFor="agree-checkbox">By continuing, I agree to the terms of use & privacy policy.</label>
+        </div>
         <button
           onClick={() => {
             if (validateForm()) {
@@ -147,11 +179,6 @@ const LoginSignup = () => {
             </span>
           </p>
         )}
-
-        <div className="loginsignup-agree">
-          <input type="checkbox" name="" id="" />
-          <p>By continue, i agree to the terms of use & privacy policy.</p>
-        </div>
       </div>
     </div>
   );

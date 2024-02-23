@@ -33,21 +33,22 @@ const CartItems = () => {
   };
 
   const applyPromoCode = () => {
-    const percentageMatch = promoCode.match(/(\d+)/);
-    if (percentageMatch) {
-      const promoPercentage = parseInt(percentageMatch[0]);
-      if (promoPercentage > 0 && promoPercentage <= 100) {
-        const discount = getTotalCartAmount() * (promoPercentage / 100);
-        setDiscountPercentage(promoPercentage);
-        setTotalWithDiscount(getTotalCartAmount() - discount);
-        setDiscountApplied(true);
-      } else {
-        setDiscountApplied(false);
+    const matches = promoCode.match(/[a-zA-Z]{6}\d+/);
+    if (matches) {
+      const percentageMatch = matches[0].match(/(\d+)/);
+      if (percentageMatch) {
+        const promoPercentage = parseInt(percentageMatch[0]);
+        if (promoPercentage > 0 && promoPercentage < 100) {
+          const discount = getTotalCartAmount() * (promoPercentage / 100);
+          setDiscountPercentage(promoPercentage);
+          setTotalWithDiscount(getTotalCartAmount() - discount);
+          setDiscountApplied(true);
+          return;
+        }
       }
-    } else {
-      setDiscountApplied(false);
     }
-  };
+    setDiscountApplied(false);
+  }
 
   return (
     <div className="cartitems">

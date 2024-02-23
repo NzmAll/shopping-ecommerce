@@ -48,7 +48,8 @@ const CartItems = () => {
       }
     }
     setDiscountApplied(false);
-  }
+  };
+  let total = 0;
 
   return (
     <div className="cartitems">
@@ -64,6 +65,7 @@ const CartItems = () => {
       {all_product.map((e) => {
         if (e.id == cartitem) {
           console.log("e" + e.id + "CartItem" + cartitem);
+          total = e.new_price * quantityId;
           return (
             <div key={e.id}>
               <div className="cartitems-format cartitems-format-main">
@@ -93,7 +95,7 @@ const CartItems = () => {
                     <IoIosAddCircleOutline />{" "}
                   </span>
                 </div>
-                {e.new_price && <p>${e.new_price * quantityId}</p>}
+                ${total}
                 <img
                   className="cartitems-remove-icon"
                   src={remove_icon}
@@ -115,7 +117,7 @@ const CartItems = () => {
           <div>
             <div className="cartitems-total-item">
               <p>Subtotal</p>
-              <p>${getTotalCartAmount()}</p>
+              <p>${total}</p>
             </div>
             <hr />
             <div className="cartitems-total-item">
@@ -129,7 +131,7 @@ const CartItems = () => {
             <hr />
             <div className="cartitems-total-item">
               <h3>Total</h3>
-              <h3>${totalWithDiscount}</h3>
+              <h3>${(total * (100 - discountPercentage)) / 100}</h3>
             </div>
           </div>
           <Link to={"/checkout"} className="checkout">

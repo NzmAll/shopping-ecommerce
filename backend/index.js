@@ -31,33 +31,19 @@ const storage = multer.diskStorage({
     );
   },
 });
-  //email smtp
-  const nodemailer = require('nodemailer');
+
+//email smtp
+const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
-    user: 'nizamiaa@code.edu.az',
-    pass: 'zoey odsj gayo ghdh'
-  }
+    user: "nizamiaa@code.edu.az",
+    pass: "zoey odsj gayo ghdh",
+  },
 });
-
-const recipientEmail = 'nizamiallahverdiyev2003@gmail.com';
-
-
-const dynamicContent = '<p>Merhaba kardes ben senin admininim,benim veb sitemde forget password yok lutfen confirm ederken bunu dusun .</p> <br/> <button>Confirm</button>';
-
-const mailOptions = {
-  from: 'your_email@example.com',
-  to: recipientEmail,
-  subject: 'Confirm message',
-  html: dynamicContent
-};
-
-
-
 
 const upload = multer({ storage: storage });
 
@@ -102,7 +88,7 @@ const Product = mongoose.model("Product", {
   quantity: {
     type: Number,
     required: true,
-    default: 0
+    default: 0,
   },
   date: {
     type: Date,
@@ -124,7 +110,7 @@ app.post("/addproduct", async (req, res) => {
   } else {
     id = 1;
   }
- 
+
   const product = new Product({
     id: id,
     name: req.body.name,
@@ -164,7 +150,7 @@ app.get("/allproducts", async (req, res) => {
 
 // Shema creating for User model
 
-const Users =  mongoose.model("Users", {
+const Users = mongoose.model("Users", {
   name: {
     type: String,
   },
@@ -180,12 +166,12 @@ const Users =  mongoose.model("Users", {
     of: Number,
     default: {},
   },
-  quantity:{
+  quantity: {
     type: Number,
   },
   emailConfirm: {
     type: Boolean,
-    default: false, 
+    default: false,
   },
   date: {
     type: Date,
@@ -193,62 +179,101 @@ const Users =  mongoose.model("Users", {
   },
 });
 app.get("/getUsers", (req, res) => {
-  Users.find({}).then(users => {
-    res.json(users);
-  }).catch(err => {
-    console.error("Error fetching users:", err);
-    res.status(500).json({ error: "An error occurred while fetching users" });
-  });
+  Users.find({})
+    .then((users) => {
+      res.json(users);
+    })
+    .catch((err) => {
+      console.error("Error fetching users:", err);
+      res.status(500).json({ error: "An error occurred while fetching users" });
+    });
 });
-
 
 //Creating Endpoint for registering the user
 
 app.post("/signup", async (req, res) => {
-  let check = await Users.findOne({ email: req.body.email, });
-  if (check) {
-    return res.status(400).json({
-      success: false,
-      errors: "existing user found with same email address",
-    });
-  }
-  let cart = {};
-  for (let i = 0; i < 300; i++) {
-    cart[i] = 0;
-  }
-  const user = new Users({
-    name: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-    cartData: cart,
-    emailConfirm: req.body.emailConfirm
-  });
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('E-posta gönderildi: ' + info.response);
+  try {
+    let check = await Users.findOne({ email: req.body.email });
+    if (check) {
+      return res.status(400).json({
+        success: false,
+        errors: "Existing user found with the same email address",
+      });
     }
-  });
+
+    let cart = {};
+    for (let i = 0; i < 300; i++) {
+      cart[i] = 0;
+    }
+
+    const user = new Users({
+      name: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      cartData: cart,
+      emailConfirm: false,
+    });
+
+    await user.save();
+
+    const recommend = req.body.email;
+    const dynamicContent = `<p>Merhaba kardes ben senin admininim, benim veb sitemde forget password yok lutfen confirm ederken bunu dusun.</p> <br/> <form action="http://localhost:4000/emailconfirm" method="post"><label for="email">Email:</label><br><input type="email" value="${recommend}" id="email" name="email"><br><input type="submit" value="Confirm"></form>`;
+
+    const mailOptions = {
+      from: "nizamiaa@code.edu.az",
+      to: req.body.email,
+      subject: "Confirm message",
+      html: dynamicContent,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, errors: "Error sending confirmation email" });
+      } else {
+        console.log("Confirmation email sent: " + info.response);
+        return res.json({ success: true, message: "User registered successfully. Confirmation email sent." });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, errors: "Error registering user" });
+  }
+});
 
 
-  await user.save();
 
-  const data = {
-    user: {
-      id: user.id,
-    },
-  };
+// email confirm post
+app.post("/emailconfirm", async (req, res) => {
+  const userEmail = req.body.email;
+  try {
+    const user = await Users.findOneAndUpdate(
+      { email: userEmail },
+      { emailConfirm: true },
+      { new: true }
+    );
 
-  const token = jwt.sign(data, "secret_ecom");
-  res.json({ success: true, token });
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    // Kullanıcı doğrulandığında token oluşturulması
+    const token = jwt.sign({ user: { id: user.id } }, "secret_ecom");
+
+    return res.json({ success: true, message: "Email confirmed successfully", token });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Error confirming email" });
+  }
 });
 
 // Creating endpoint for user login
 
 app.post("/login", async (req, res) => {
   const user = await Users.findOne({ email: req.body.email });
-  
+
   if (!user) {
     return res.json({ success: false, errors: "Wrong email id" });
   }
@@ -260,18 +285,13 @@ app.post("/login", async (req, res) => {
   const passCompare = req.body.password === user.password;
 
   if (passCompare) {
-    const data = {
-      user: {
-        id: user.id,
-      },
-    };
-    
-    const token = jwt.sign(data, "secret_ecom");
+    const token = jwt.sign({ user: { id: user.id } }, "secret_ecom");
     return res.json({ success: true, token });
   } else {
     return res.json({ success: false, errors: "Invalid password" });
   }
 });
+
 
 //creating endpoint for new collection data
 
